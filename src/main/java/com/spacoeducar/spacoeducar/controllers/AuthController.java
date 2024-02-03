@@ -21,7 +21,7 @@ import com.spacoeducar.spacoeducar.repositories.UserRepository;
 
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
