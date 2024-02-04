@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import com.spacoeducar.spacoeducar.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String>{
+public interface UserRepository extends JpaRepository<User, Long>{
     UserDetails findByLogin(String login);
 }

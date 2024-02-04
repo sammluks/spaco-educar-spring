@@ -15,7 +15,6 @@ import com.spacoeducar.spacoeducar.dtos.RegisterDto;
 import com.spacoeducar.spacoeducar.dtos.security.AuthDto;
 import com.spacoeducar.spacoeducar.infra.security.TokenService;
 import com.spacoeducar.spacoeducar.model.User;
-import com.spacoeducar.spacoeducar.model.UserRole;
 import com.spacoeducar.spacoeducar.repositories.UserRepository;
 
 
@@ -51,7 +50,7 @@ public class AuthController {
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
 
-        User user = new User(data.getUsername(), encryptedPassword, UserRole.USER);
+        User user = new User(data.getUsername(), encryptedPassword, data.getName(), data.getEmail());
 
         this.repository.save(user);
 

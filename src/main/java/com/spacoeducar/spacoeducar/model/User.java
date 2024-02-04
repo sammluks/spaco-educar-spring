@@ -1,6 +1,5 @@
 package com.spacoeducar.spacoeducar.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -8,19 +7,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.spacoeducar.spacoeducar.enums.Role;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,39 +31,24 @@ import lombok.NoArgsConstructor;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(unique = true, nullable = false)
     private String login;
 
+    @Column(nullable = false)
     private String password;
+    
+    @Column(nullable = false)
+    private String name;
 
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
-
-    @Column(name = "account_non_expired")
-    private Boolean accountNonExpired;
-
-    @Column(name = "account_non_locked")
-    private Boolean accountNonLocked;
-
-    @Column(name = "credentials_non_expired")
-    private Boolean credentialsNonExpired;
-
-    @Column(name = "enabled")
-    private Boolean enabled;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_permission", joinColumns = { @JoinColumn(name = "id_user") },
-    inverseJoinColumns = { @JoinColumn(name = "id_permission") })
-    private List<Permission> permissions;
-
-    public List<String> getRoles() {
-        List<String> roles = new ArrayList<>();
-        for(Permission permission : permissions) {
-            roles.add(permission.getDescription());
-        }
-        return roles;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -103,10 +81,17 @@ public class User implements UserDetails {
         return true;
     }
 
-    public User(String login, String encryptedPassword, UserRole role) {
+    public User(String login, String encryptedPassword, String name, String email) {
         this.login = login;
         this.password = encryptedPassword;
-        this.role = role;
+        this.name = name;
+        this.email = email;
+        if(login.equals("SpacoEducar")) {
+            this.role = UserRole.ADMIN;
+        } else {
+            this.role = UserRole.USER;
+        }
+
     }
 
 }
